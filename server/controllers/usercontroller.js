@@ -1,4 +1,8 @@
-import UserModel from "../models/usermodel";
+// import sendEmail from "../config/sendEmail";
+import sendEmail from "../config/sendEmail.js";
+import UserModel from "../models/usermodel.js";
+import bcrypt from "bcryptjs";
+import verifyEmailTemplate from "../utils/verifyEmailTemplate.js";
 
 export async function registerUserController(request,response){
     try{
@@ -22,9 +26,35 @@ export async function registerUserController(request,response){
         })
        }
 
+       const salt = bcrypt.genSaltSync(10);
+         const hashPassword = bcrypt.hashSync(password, salt);
 
+        //  saved in database
+        const payload={
+            name,
+            email,
+            password:hashPassword
+        }
 
+        const newUser = new UserModel(payload)
+        const save = await newUser.save()
 
+        const VerifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?code${save?._id}`
+
+        const VerifyEmail = await sendEmail({
+            sendTO :email,
+            subject:"Email Verification",
+            html: verifyEmailTemplate( {
+                name,
+                url:VerifyEmailUrl
+            })
+        })
+        return response.json({
+            message:"User registered successfully",
+            success:true,
+            error:false,
+            data:save
+        });
     }
     catch(error){
         return response.status(500).json({
