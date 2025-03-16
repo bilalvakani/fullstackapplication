@@ -114,13 +114,13 @@ try {
     }
     if(user.status !== 'Active'){
         return response.status(400).json({
-            message:"Contact to admin",
+            message:"Contact to adminnn",
             error:true,
             success:false
         });
     }
     const checkPassword = await bcrypt.js.compare(password,user.password)
-    
+
 
     
 } catch (error) {
