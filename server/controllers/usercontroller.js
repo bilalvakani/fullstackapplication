@@ -121,6 +121,14 @@ try {
     }
     const checkPassword = await bcrypt.js.compare(password,user.password)
 
+    if(!checkPassword){
+        return response.status(400).json({
+            message:"Invalid password",
+            error:true,
+            success:false
+        });
+    }
+
 
     
 } catch (error) {
