@@ -105,6 +105,19 @@ export async function verifyEmailController(request,response){
 export async function loginController(request,response){
 try {
     const {email,password} = request.body
+
+    if (!email||!password){
+        return response.status(400).json({
+            message:"provide email,password",
+            error:true,
+            success:false
+        })
+    }
+
+
+
+
+
     const user = await UserModel.findOne({email})
 
     if (!user){
@@ -114,6 +127,15 @@ try {
             success:false
         });
     }
+    if (user.status !== "Active"){
+            return response.status(400).json({
+                message:"contact to admmin",
+                error:true,
+                success:false
+            })
+    }
+
+
     const checkPassword = await bcrypt.compare(password,user.password)
 
     if(!checkPassword){
