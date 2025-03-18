@@ -3,6 +3,8 @@ import sendEmail from "../config/sendEmail.js";
 import UserModel from "../models/usermodel.js";
 import bcrypt from "bcryptjs";
 import verifyEmailTemplate from "../utils/verifyEmailTemplate.js";
+import generatedAccessToken from "../utils/generatedAccessToken.js";
+import generateRefreshToken from "../utils/generateRefreshToken.js";
 
 // register user controller
 export async function registerUserController(request,response){
@@ -112,14 +114,7 @@ try {
             success:false
         });
     }
-    if(user.status !== 'Active'){
-        return response.status(400).json({
-            message:"Contact to adminnn",
-            error:true,
-            success:false
-        });
-    }
-    const checkPassword = await bcrypt.js.compare(password,user.password)
+    const checkPassword = await bcrypt.compare(password,user.password)
 
     if(!checkPassword){
         return response.status(400).json({
@@ -128,6 +123,30 @@ try {
             success:false
         });
     }
+
+    const acceessToken  = await generatedAccessToken(user._id)
+    const refreshToken = await generateRefreshToken(user._id)
+
+
+    const cookiesOption ={
+        httpOnly:true,
+        secure:true,
+        sameSite:"None"
+    }
+
+    response.cookie('acceessToken',acceessToken,cookiesOption)
+    response.cookie('refreshToken',refreshToken,cookiesOption)
+
+    return response.json({
+        message :"Login sucessfully",
+        error:false,
+        success:true,
+        data:{
+            acceessToken,
+            refreshToken
+        }
+    })
+
 
 
     

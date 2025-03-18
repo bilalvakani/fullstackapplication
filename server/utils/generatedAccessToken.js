@@ -7,8 +7,6 @@ const generatedAccessToken = async(userId) => {
     {expiresIn:'5h'}
 )
 return token
-
-
 }
 
 export default generatedAccessToken
