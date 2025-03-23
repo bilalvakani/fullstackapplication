@@ -199,9 +199,7 @@ export  async function logoutController(request,response){
             error:false,
             success:true
 
-        })
-
-        
+        }) 
     } catch (error) {
         return response.status(500).json({
             message:error.message||error,
