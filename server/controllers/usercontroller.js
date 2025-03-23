@@ -156,7 +156,7 @@ try {
         sameSite:"None"
     }
 
-    response.cookie('acceessToken',acceessToken,cookiesOption)
+    response.cookie('accessToken',acceessToken,cookiesOption)
     response.cookie('refreshToken',refreshToken,cookiesOption)
 
     return response.json({
@@ -191,7 +191,7 @@ export  async function logoutController(request,response){
             sameSite:"None"
         }
     
-        response.clearCookie("acceessToken",cookiesOption)
+        response.clearCookie("accessToken",cookiesOption)
         response.clearCookie("refreshToken",cookiesOption)
 
         return response.json({
