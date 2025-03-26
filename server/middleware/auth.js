@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const auth = async(request, response, next) => {
   try {
@@ -12,10 +14,20 @@ const auth = async(request, response, next) => {
         })
 
     }
-
-    const decode =  await jwt.verify(token,Process.env.SECRET_KEY)
+    const decode =  await jwt.verify(token,process.env.SECRET_KEY)
   console.log("decode", decode)
+   
+  if (!decode){
+    return  response.json(401).json
+    ({
+      message:"unauthorized access",
+      error:true,
+      success:false
+    })
+  }
 
+  request.userId = decode.id
+  next()
 
 
 

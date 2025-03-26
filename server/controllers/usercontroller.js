@@ -185,6 +185,9 @@ try {
 
 export  async function logoutController(request,response){
     try {
+         const userid = request.userId
+
+
         const cookiesOption ={
             httpOnly:true,
             secure:true,
@@ -194,13 +197,24 @@ export  async function logoutController(request,response){
         response.clearCookie("accessToken",cookiesOption)
         response.clearCookie("refreshToken",cookiesOption)
 
+
+        const removeRefreshToken = await UserModel.findByIdAndUpdate(userid,{
+            refresh_token:""
+        })
+
+
+
+
+
         return response.json({
             message:"Logout Succeessfully",
             error:false,
             success:true
 
         }) 
-    } catch (error) {
+    } 
+    catch (error) {
+        console.error("Logout error:", error);
         return response.status(500).json({
             message:error.message||error,
             error:true,
